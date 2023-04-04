@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": "https://github.com/oktics/oktics-health-pose-detection",
+  "repository": "https://github.com/oktics/oktics-health-pose",
   "author": "Oktics",
   "license": "MIT",
   "dependencies": {

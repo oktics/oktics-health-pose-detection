@@ -15,15 +15,15 @@ Using a node.js ~= v16.17.1
 
 Via npm:
 ```sh
-npm i git@github.com:oktics/oktics-health-pose-detection.git
+npm i git@github.com:oktics/oktics-health-pose.git
 
 ```
 
 ### Import the libraries
 
 ```javascript
-import PoseExercise from '@oktics/oktics-health-pose-detection';
-import {exerciseResult} from '@oktics/oktics-health-pose-detection';
+import PoseExercise from '@oktics/oktics-health-pose';
+import {exerciseResult} from '@oktics/oktics-health-pose';
 ```
 
 ### Create a detector
