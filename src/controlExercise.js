@@ -5,9 +5,13 @@ let posicioInici = true; //Estat inicial d'un exercici(cos// amunt quan fem sent
 let posicioFinal = false;	//Estat final d'un exercici (cos abaix quan fem sentadilla)
 let degreesExerciseRight = [];
 let degreesExerciseLeft = [];
-
+let lastExercise = '';
 
 export default function controlExercise(results, exercise) {
+
+	// Init counter when changing exercise
+	if (exercise.name !== lastExercise) repetitionsCounter = 0;
+	lastExercise = exercise.name;
 
 	let kps = exercise.kpDegrees.flat();
 	const isAboveThreshold = (currentValue) =>
