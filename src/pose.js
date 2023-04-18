@@ -70,7 +70,7 @@ export const getExercisesList = async () => {
 export default class PoseExercise {
     // runtime: 'mediapipe' or 'tfjs'
     constructor(selectedExercise,
-        runtime = 'tfjs',
+        runtime = 'mediapipe',
         modelType = 'full') {
         // Model basic options
         this.runtime = runtime;
@@ -87,7 +87,8 @@ export default class PoseExercise {
         const detectorConfig = {
             runtime: this.runtime,
             enableSmoothing: true,
-            modelType: this.modelType
+            modelType: this.modelType,
+            solutionPath: 'https://vps.okoproject.com/oktics-health/@mediapipe/pose/'
         }
         return await poseDetection.createDetector(this.model, detectorConfig);
     }
