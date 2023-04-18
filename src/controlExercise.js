@@ -31,7 +31,7 @@ export default function controlExercise(results, exercise) {
 				y: results.keypoints3D[kps[2]].y,
 				z: results.keypoints3D[kps[2]].z };
 			degreesExerciseRight.push(find_angle3D(A, B, C));
-			console.log(find_angle3D(A, B, C))
+
 			//Left side
 			kps = exercise.kpDegrees[1];
 			A = { x: results.keypoints3D[kps[0]].x,
@@ -44,7 +44,7 @@ export default function controlExercise(results, exercise) {
 				y: results.keypoints3D[kps[2]].y,
 				z: results.keypoints3D[kps[2]].z };
 			degreesExerciseLeft.push(find_angle3D(A, B, C));
-			console.log(find_angle3D(A, B, C))
+
 		} else if (exercise.space === "2D") {
 			//Right side
 			let kps = exercise.kpDegrees[0];
