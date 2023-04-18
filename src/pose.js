@@ -1,10 +1,10 @@
 import axios from 'axios';
 import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
-//import '@mediapipe/pose';
+import '@mediapipe/pose';
 
 import controlExercise, {repetitionsCounter} from "./controlExercise.js";
-
+const healthApi = 'https://vps.okoproject.com:49180/oktics-api';
 
 export const exerciseResult = async (detector, params, image) =>  {
     try {
@@ -55,11 +55,21 @@ export const getKeyPoints = async(detector, image) => {
     }
 }
 
+export const getExercisesList = async () => {
+    try {
+        let urlExerciseList = healthApi + '/exercise_list';
+        let res = await axios.get(urlExerciseList);
+        return res.data.data;
+    }
+    catch (error) {
+        console.log(error);
+        return "";
+    }
+}
 
 export default class PoseExercise {
     // runtime: 'mediapipe' or 'tfjs'
-    constructor(urlExerciseData,
-        selectedExercise,
+    constructor(selectedExercise,
         runtime = 'tfjs',
         modelType = 'full') {
         // Model basic options
@@ -68,7 +78,6 @@ export default class PoseExercise {
         this.model = poseDetection.SupportedModels.BlazePose;
 
         // Exercise
-        this.urlExerciseData = urlExerciseData;
         this.selectedExercise = selectedExercise;
         this.params = this.getExParams();
         this.detector = this.initDetector();
@@ -85,7 +94,8 @@ export default class PoseExercise {
 
     async getExParams() {
         try {
-            let res = await axios.post(this.urlExerciseData,
+            let urlExerciseData = healthApi + '/exercise_id';
+            let res = await axios.post(urlExerciseData,
                 { name: this.selectedExercise });
             let data = res.data.data;
             return data.params;
