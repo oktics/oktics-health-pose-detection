@@ -94,9 +94,16 @@ export default class PoseExercise {
 
     async getExParams() {
         try {
-            let urlExerciseData = healthApi + '/exercise_id';
-            let res = await axios.post(urlExerciseData,
-                { name: this.selectedExercise });
+            let urlExerciseList = healthApi + '/exercise_list';
+            let res = await axios.get(urlExerciseList);
+            let exerciseList = res.data.data;
+            const getItemByKey = (key) => {
+                return exerciseList.find((item) => item.id === key);
+            };
+            const exercise = getItemByKey(this.selectedExercise);
+            urlExerciseList = healthApi + '/exercise';
+            res = await axios.post(urlExerciseList,
+                { name: exercise.name });
             let data = res.data.data;
             return data.params;
         }
