@@ -6,10 +6,20 @@ import '@mediapipe/pose';
 import controlExercise, {repetitionsCounter} from "./controlExercise.js";
 const healthApi = 'https://vps.okoproject.com:49180/oktics-api';
 
+const errIsExercise = "selected exercise does not exist";
+const errEstimatedPases = "unable to estimate poses";
+
 export const exerciseResult = async (detector, params, image) =>  {
     try {
+        // Getting keypoints
         let poses = await getKeyPoints(detector, image);
         let results = poses[0];
+
+        // Handle exceptions
+        if (typeof poses === "undefined" || poses == null) throw errEstimatedPases;
+        if (typeof params.id === "undefined" || params.id == null) throw errIsExercise;
+
+        // Getting repetions
         controlExercise(results, params);
 
         // Return
@@ -20,7 +30,8 @@ export const exerciseResult = async (detector, params, image) =>  {
         }
 
     } catch (error) {
-       console.log(error);
+        console.log(error);
+        return ({ error: error });
     }
 }
 
@@ -39,6 +50,7 @@ export const exerciseResultFromRGBArray = async (detector, params, rgbArray, wid
 
     } catch (error) {
         console.log(error);
+        return ({ error: error });
     }
 }
 
@@ -51,6 +63,7 @@ export const getKeyPoints = async(detector, image) => {
             return poses;
         } catch (error) {
             console.log(error);
+            return "";
         }
     }
 }
@@ -94,7 +107,8 @@ export default class PoseExercise {
     }
 
     async getExParams() {
-        try {
+        try {                     
+            if (typeof this.selectedExercise !== "number") return "";
             let urlExerciseList = healthApi + '/exercise_list';
             let res = await axios.get(urlExerciseList);
             let exerciseList = res.data.data;
@@ -109,7 +123,9 @@ export default class PoseExercise {
             return data.params;
         }
         catch (error) {
-            console.log(error)}
+            console.log(error);
+            return "";
+        }
     }
 }
 
