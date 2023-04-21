@@ -24,14 +24,15 @@ export const exerciseResult = async (detector, params, image) =>  {
 
         // Return
         return {
+            status: 0,
             keypoints: results.keypoints,
             keypoints3D: results.keypoints3D,
             repetitions: repetitionsCounter
         }
 
     } catch (error) {
-        console.log(error);
-        return ({ error: error });
+        //console.log(error);
+        return ({ status: -1, error: error });
     }
 }
 
@@ -49,8 +50,8 @@ export const exerciseResultFromRGBArray = async (detector, params, rgbArray, wid
         return results;
 
     } catch (error) {
-        console.log(error);
-        return ({ error: error });
+        //console.log(error);
+        return ({ status: -1, error: error });
     }
 }
 
@@ -123,7 +124,7 @@ export default class PoseExercise {
             return data.params;
         }
         catch (error) {
-            console.log(error);
+            //console.log(error);
             return "";
         }
     }

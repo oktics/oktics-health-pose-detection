@@ -4,7 +4,7 @@ This package is used to count exercise
 reps based on a pose detection model.
 
 Two variables are required to use this package: a
-**frame (image)** and an **exercise id**.
+**frame (image)** or **rgb24 array** and an **exercise id**.
 
 ### Installation
 Using a node.js ~= v16.17.1
@@ -22,7 +22,7 @@ npm i git@github.com:oktics/oktics-health-pose.git
 Import the functions you need from the library like this:
 
 ```javascript
-import PoseExercise, {getExercisesList, exerciseResultFromRGBArray} from '@oktics/oktics-health-pose';
+import PoseExercise, {getExercisesList, exerciseResultFromRGBArray, exerciseResult} from '@oktics/oktics-health-pose';
 ```
 
 ### Available exercises
@@ -34,10 +34,24 @@ Usage example:
 
 ```javascript
     import {getExercisesList} from '@oktics/oktics-health-pose';
+    import React, { useState, useEffect } from "react";
 
-    const updateList = async () => {
-        let exerciseList = await getExercisesList();
-        console.log(exerciseList);
+    function App() {
+        const [selectedExercise, setSelectedExercise] = useState('');
+
+        const getExerciseId = async (index) => {
+            let exerciseList = await getExercisesList();
+            let exerciseId = exerciseList[index].id;
+            setSelectedExercise(exerciseId);
+        }
+
+        useEffect(() => {
+            // Select first exercise: "Squats"
+            getExerciseId(0);
+        }, [])
+
+        // Selected exercise id: 101
+        return <div>'Selected exercise id:' {selectedExercise}</div>
     }
 ```
 
@@ -75,20 +89,17 @@ Output:
 
 ### Init PoseExercise model and create a detector
 
-Create a PoseExercise object
+Create new instance of PoseExercise object.
+
+Example:
 
 ```javascript
     import PoseExercise from '@oktics/oktics-health-pose';
-    const posesita = new PoseExercise(exerciseId);
-```
 
-Usage example:
-
-```javascript
     // Init PoseExercise model
     async function initDetector() {
-        const exerciseId = 101; // exercise: 'Squats'
-        const posesita = new PoseExercise(exerciseId);
+        const exerciseId = selectedExercise;
+        const pose = new PoseExercise(exerciseId);
     }
 ```
 
@@ -116,7 +127,8 @@ Parameters:
 Examples of rgb24 array format:
 
 ```javascript
-    function drawImageFromRGBArray(canvas,rgbArray, width, height) {
+    function drawImageFromRGBArray(rgbArray, width, height) {
+        // Image data from RGB array
         const dataArray = new Uint8ClampedArray(width * height * 4);
         for (let i = 0; i < width * height; i++) {
             dataArray[i * 4 + 0] = rgbArray[i * 3 + 0];
@@ -130,12 +142,29 @@ Examples of rgb24 array format:
         context.putImageData(imgData, 0, 0);
     }
 
-    // 3x3 pixel black cross rgb24 array format
+    function rgbArrayFromImage(width, height) {
+        // RGB array from image data
+        const context = canvas.getContext("2d");
+        const imageData = context.getImageData(0, 0, width, height);
+        const rgbArray = new Uint8Array(width * height * 3);
+        for (let i = 0; i < width * height; i++) {
+            rgbArray[i * 3] = imageData.data[i * 4];
+            rgbArray[i * 3 + 1] = imageData.data[i * 4 + 1];
+            rgbArray[i * 3 + 2] = imageData.data[i * 4 + 2];
+        }
+        return rgbArray;
+    }
+
+    // draw 3x3 pixel black cross from rgb24 array format
     var canvas = document.getElementById("myCanvas");
     const width = 3;
     const height = 3;
     const rgbArray = new Uint8Array([255, 255, 255, 0, 0, 0, 255, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0, 0, 0, 255, 255, 255]);
-    drawImageFromRGBArray(canvas,rgbArray, width, height);
+    drawImageFromRGBArray(rgbArray, width, height);
+
+    // get rgb24 array from canvas image
+    const rgb24 = rgbArrayFromImage(width, height);
+    console.log('3x3 pixel black cross rgb24 array: ' + rgb24);
 ```
 
 Usage example:
@@ -148,13 +177,13 @@ Usage example:
 
     // Init PoseExercise model
     async function initPoseExercise() {
-        const exerciseId = 101; // exercise: 'Squats'
-        const posesita = new PoseExercise(exerciseId);
-        const params = await posesita.params;
-        const detector = await posesita.detector;
+        const exerciseId = selectedExercise;
+        const pose = new PoseExercise(exerciseId);
+        params = await pose.params;
+        detector = await pose.detector;
     }
 
-    async function predictPoseExercise() 
+    async function predictPoseExercise() {
         const width = 1280;
         const height = 960;
         const rgbArray = new Uint8Array([255, 255, 255, ...]);
@@ -165,7 +194,7 @@ Usage example:
 
     // Start prediction
     await initPoseExercise();
-    predictPoseExercise();
+    await predictPoseExercise();
 ```
 
 
@@ -197,10 +226,10 @@ Usage example:
 
     // Init PoseExercise model
     async function initPoseExercise() {
-        const exerciseId = 101; // exercise: 'Squats'
-        const posesita = new PoseExercise(exerciseId);
-        const params = await posesita.params;
-        const detector = await posesita.detector;
+        const exerciseId = selectedExercise;
+        const pose = new PoseExercise(exerciseId);
+        params = await pose.params;
+        detector = await pose.detector;
     }
 
     async function predictPoseExercise() {
@@ -219,6 +248,8 @@ Usage example:
 
 #### Example of results
 
+*status*: code status 0 means pose prediction completed successfully. Code status -1 means there has been an error.
+
 *keypoints*: array of 33 keypoint objects, each object has x, y, a confidence score and the position name. 
 The x and y are in pixel units.
 
@@ -227,7 +258,8 @@ The x, y, z are in meter units. The body structure is considered as if it were i
 Each axis in a range from -1 to 1.
 
 ```
-{keypoints: Array(33), 
+{status: 0,
+keypoints: Array(33), 
 keypoints3D: Array(33), 
 score: 0.9999525547027588, 
 repetitions: 0}
@@ -259,7 +291,8 @@ Solution: This error occurs when the PoseExercise detector is not able to estima
 Check image input to 'exerciseResultFromRGBArray()' or 'exerciseResult()'.
 
 ```
-{error: unsupported exercise type}
+{"status":-1,
+"error":"selected exercise does not exist"}
 ```
 
 #### License
