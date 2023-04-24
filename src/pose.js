@@ -1,26 +1,38 @@
 import axios from 'axios';
 import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
-//import '@mediapipe/pose';
+import '@mediapipe/pose';
 
 import controlExercise, {repetitionsCounter} from "./controlExercise.js";
+const healthApi = 'https://vps.okoproject.com:49180/oktics-api';
 
+const errIsExercise = "selected exercise does not exist";
+const errEstimatedPases = "unable to estimate poses";
 
 export const exerciseResult = async (detector, params, image) =>  {
     try {
+        // Getting keypoints
         let poses = await getKeyPoints(detector, image);
         let results = poses[0];
+
+        // Handle exceptions
+        if (typeof poses === "undefined" || poses == null) throw errEstimatedPases;
+        if (typeof params.id === "undefined" || params.id == null) throw errIsExercise;
+
+        // Getting repetions
         controlExercise(results, params);
 
         // Return
         return {
+            status: 0,
             keypoints: results.keypoints,
             keypoints3D: results.keypoints3D,
             repetitions: repetitionsCounter
         }
 
     } catch (error) {
-       console.log(error);
+        //console.log(error);
+        return ({ status: -1, error: error });
     }
 }
 
@@ -38,7 +50,8 @@ export const exerciseResultFromRGBArray = async (detector, params, rgbArray, wid
         return results;
 
     } catch (error) {
-        console.log(error);
+        //console.log(error);
+        return ({ status: -1, error: error });
     }
 }
 
@@ -51,16 +64,27 @@ export const getKeyPoints = async(detector, image) => {
             return poses;
         } catch (error) {
             console.log(error);
+            return "";
         }
     }
 }
 
+export const getExercisesList = async () => {
+    try {
+        let urlExerciseList = healthApi + '/exercise_list';
+        let res = await axios.get(urlExerciseList);
+        return res.data.data;
+    }
+    catch (error) {
+        console.log(error);
+        return "";
+    }
+}
 
 export default class PoseExercise {
     // runtime: 'mediapipe' or 'tfjs'
-    constructor(urlExerciseData,
-        selectedExercise,
-        runtime = 'tfjs',
+    constructor(selectedExercise,
+        runtime = 'mediapipe',
         modelType = 'full') {
         // Model basic options
         this.runtime = runtime;
@@ -68,7 +92,6 @@ export default class PoseExercise {
         this.model = poseDetection.SupportedModels.BlazePose;
 
         // Exercise
-        this.urlExerciseData = urlExerciseData;
         this.selectedExercise = selectedExercise;
         this.params = this.getExParams();
         this.detector = this.initDetector();
@@ -78,20 +101,32 @@ export default class PoseExercise {
         const detectorConfig = {
             runtime: this.runtime,
             enableSmoothing: true,
-            modelType: this.modelType
+            modelType: this.modelType,
+            solutionPath: 'https://vps.okoproject.com/oktics-health/@mediapipe/pose/'
         }
         return await poseDetection.createDetector(this.model, detectorConfig);
     }
 
     async getExParams() {
-        try {
-            let res = await axios.post(this.urlExerciseData,
-                { name: this.selectedExercise });
+        try {                     
+            if (typeof this.selectedExercise !== "number") return "";
+            let urlExerciseList = healthApi + '/exercise_list';
+            let res = await axios.get(urlExerciseList);
+            let exerciseList = res.data.data;
+            const getItemByKey = (key) => {
+                return exerciseList.find((item) => item.id === key);
+            };
+            const exercise = getItemByKey(this.selectedExercise);
+            urlExerciseList = healthApi + '/exercise';
+            res = await axios.post(urlExerciseList,
+                { name: exercise.name });
             let data = res.data.data;
             return data.params;
         }
         catch (error) {
-            console.log(error)}
+            //console.log(error);
+            return "";
+        }
     }
 }
 

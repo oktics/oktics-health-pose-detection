@@ -49,7 +49,7 @@ export default function controlExercise(results, exercise) {
 			//Right side
 			let kps = exercise.kpDegrees[0];
 			let A = { x: results.keypoints3D[kps[0]].x,
-				y: results.keypoints3D[kps[0]].y + 1 };
+				y: results.keypoints3D[kps[0]].y };
 			let B = { x: results.keypoints3D[kps[1]].x,
 				y: results.keypoints3D[kps[1]].y };
 			let C = { x: results.keypoints3D[kps[2]].x,
@@ -59,7 +59,7 @@ export default function controlExercise(results, exercise) {
 			//Left side
 			kps = exercise.kpDegrees[1];
 			A = { x: results.keypoints3D[kps[0]].x,
-				y: results.keypoints3D[kps[0]].y + 1 };
+				y: results.keypoints3D[kps[0]].y };
 			B = { x: results.keypoints3D[kps[1]].x,
 				y: results.keypoints3D[kps[1]].y };
 			C = { x: results.keypoints3D[kps[2]].x,
@@ -96,14 +96,11 @@ export default function controlExercise(results, exercise) {
 				posicioFinal = false;
 			}
 		}
-		//Quan acabem:
-		if (repetitionsCounter >= exercise.maxCounter && posicioInici === true)
-		{
-			// Enviar els resultats (degreesExerciseRight) a una API per a que
-			// quedi per a l'històric i que ho pugui veure el metge
-			repetitionsCounter = 0;
-			degreesExerciseRight = [];
-			degreesExerciseLeft = [];
-		}
+		//if (repetitionsCounter >= exercise.maxCounter && posicioInici === true)
+		//{
+		//	repetitionsCounter = 0;
+		//	degreesExerciseRight = [];
+		//	degreesExerciseLeft = [];
+		//}
 	}
 }
