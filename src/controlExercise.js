@@ -107,6 +107,7 @@ export default function controlExercise(results, exercise) {
 				< exercise.minDegree && posicioFinal) {
 				posicioInici = true;
 				posicioFinal = false;
+				counter = 0;
 				if (timer !== undefined) timer = clearInterval(timer);
 			} else {
 				if (timer !== undefined) timer = clearInterval(timer);
