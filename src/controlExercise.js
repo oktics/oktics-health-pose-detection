@@ -6,6 +6,8 @@ let posicioFinal = false;	//Estat final d'un exercici (cos abaix quan fem sentad
 let degreesExerciseRight = [];
 let degreesExerciseLeft = [];
 let lastExercise = '';
+let timer;
+let counter = 0;
 
 export default function controlExercise(results, exercise) {
 
@@ -13,6 +15,7 @@ export default function controlExercise(results, exercise) {
 	if (exercise.name !== lastExercise) repetitionsCounter = 0;
 	lastExercise = exercise.name;
 
+	let minDuration = params.minDuration;
 	let kps = exercise.kpDegrees.flat();
 	const isAboveThreshold = (currentValue) =>
 		results.keypoints3D[currentValue].score > 0.5;
@@ -71,29 +74,42 @@ export default function controlExercise(results, exercise) {
 			if (degreesExerciseRight.at(-1) <
 				exercise.minDegree && degreesExerciseLeft.at(-1) <
 				exercise.minDegree && posicioInici) {
-				posicioInici = false;
-				posicioFinal = true;
-				repetitionsCounter += 1;
+				if (counter >= minDuration) {
+					posicioInici = false;
+					posicioFinal = true;
+					repetitionsCounter += 1;
+				}
+				if (timer === undefined) timer = setInterval(() => counter = counter + 1, 1000);
 			}
 			else if (degreesExerciseRight.at(-1) >
 				exercise.maxDegree && degreesExerciseLeft.at(-1) >
 				exercise.maxDegree && posicioFinal) {
 				posicioInici = true;
 				posicioFinal = false;
+				counter = 0;
+				if (timer !== undefined) timer = clearInterval(timer);
+			} else {
+				if (timer !== undefined) timer = clearInterval(timer);
 			}
 		} else if (exercise.change === "less2more") {
 			if (degreesExerciseRight.at(-1) >
 				exercise.maxDegree && degreesExerciseLeft.at(-1) >
 				exercise.maxDegree && posicioInici) {
-				posicioInici = false;
-				posicioFinal = true;
-				repetitionsCounter += 1;
+				if (counter >= minDuration) {
+					posicioInici = false;
+					posicioFinal = true;
+					repetitionsCounter += 1;
+				}
+				if (timer === undefined) timer = setInterval(() => counter = counter + 1, 1000);
 
 			} else if (degreesExerciseRight.at(-1) <
 				exercise.minDegree && degreesExerciseLeft.at(-1)
 				< exercise.minDegree && posicioFinal) {
 				posicioInici = true;
 				posicioFinal = false;
+				if (timer !== undefined) timer = clearInterval(timer);
+			} else {
+				if (timer !== undefined) timer = clearInterval(timer);
 			}
 		}
 		//if (repetitionsCounter >= exercise.maxCounter && posicioInici === true)
