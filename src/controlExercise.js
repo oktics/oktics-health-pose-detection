@@ -24,49 +24,73 @@ export default function controlExercise(results, exercise) {
 		if (exercise.space === "3D") {
 			//Right side
 			let kps = exercise.kpDegrees[0];
-			let A = { x: results.keypoints3D[kps[0]].x,
+			let A = {
+				x: results.keypoints3D[kps[0]].x,
 				y: results.keypoints3D[kps[0]].y,
-				z: results.keypoints3D[kps[0]].z };
-			let B = { x: results.keypoints3D[kps[1]].x,
+				z: results.keypoints3D[kps[0]].z
+			};
+			let B = {
+				x: results.keypoints3D[kps[1]].x,
 				y: results.keypoints3D[kps[1]].y,
-				z: results.keypoints3D[kps[1]].z };
-			let C = { x: results.keypoints3D[kps[2]].x,
+				z: results.keypoints3D[kps[1]].z
+			};
+			let C = {
+				x: results.keypoints3D[kps[2]].x,
 				y: results.keypoints3D[kps[2]].y,
-				z: results.keypoints3D[kps[2]].z };
+				z: results.keypoints3D[kps[2]].z
+			};
 			degreesExerciseRight.push(find_angle3D(A, B, C));
 
 			//Left side
 			kps = exercise.kpDegrees[1];
-			A = { x: results.keypoints3D[kps[0]].x,
+			A = {
+				x: results.keypoints3D[kps[0]].x,
 				y: results.keypoints3D[kps[0]].y,
-				z: results.keypoints3D[kps[0]].z };
-			B = { x: results.keypoints3D[kps[1]].x,
+				z: results.keypoints3D[kps[0]].z
+			};
+			B = {
+				x: results.keypoints3D[kps[1]].x,
 				y: results.keypoints3D[kps[1]].y,
-				z: results.keypoints3D[kps[1]].z };
-			C = { x: results.keypoints3D[kps[2]].x,
+				z: results.keypoints3D[kps[1]].z
+			};
+			C = {
+				x: results.keypoints3D[kps[2]].x,
 				y: results.keypoints3D[kps[2]].y,
-				z: results.keypoints3D[kps[2]].z };
+				z: results.keypoints3D[kps[2]].z
+			};
 			degreesExerciseLeft.push(find_angle3D(A, B, C));
 
 		} else if (exercise.space === "2D") {
 			//Right side
 			let kps = exercise.kpDegrees[0];
-			let A = { x: results.keypoints3D[kps[0]].x,
-				y: results.keypoints3D[kps[0]].y };
-			let B = { x: results.keypoints3D[kps[1]].x,
-				y: results.keypoints3D[kps[1]].y };
-			let C = { x: results.keypoints3D[kps[2]].x,
-				y: results.keypoints3D[kps[2]].y };
+			let A = {
+				x: results.keypoints3D[kps[0]].x,
+				y: results.keypoints3D[kps[0]].y
+			};
+			let B = {
+				x: results.keypoints3D[kps[1]].x,
+				y: results.keypoints3D[kps[1]].y
+			};
+			let C = {
+				x: results.keypoints3D[kps[2]].x,
+				y: results.keypoints3D[kps[2]].y
+			};
 
 			degreesExerciseRight.push(find_angle(A, B, C));
 			//Left side
 			kps = exercise.kpDegrees[1];
-			A = { x: results.keypoints3D[kps[0]].x,
-				y: results.keypoints3D[kps[0]].y };
-			B = { x: results.keypoints3D[kps[1]].x,
-				y: results.keypoints3D[kps[1]].y };
-			C = { x: results.keypoints3D[kps[2]].x,
-				y: results.keypoints3D[kps[2]].y };
+			A = {
+				x: results.keypoints3D[kps[0]].x,
+				y: results.keypoints3D[kps[0]].y
+			};
+			B = {
+				x: results.keypoints3D[kps[1]].x,
+				y: results.keypoints3D[kps[1]].y
+			};
+			C = {
+				x: results.keypoints3D[kps[2]].x,
+				y: results.keypoints3D[kps[2]].y
+			};
 			degreesExerciseLeft.push(find_angle(A, B, C));
 		}
 
@@ -119,5 +143,8 @@ export default function controlExercise(results, exercise) {
 		//	degreesExerciseRight = [];
 		//	degreesExerciseLeft = [];
 		//}
+		return 0;
+	} else {
+		return -1;
 	}
 }

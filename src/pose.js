@@ -7,7 +7,7 @@ import controlExercise, {repetitionsCounter} from "./controlExercise.js";
 const healthApi = 'https://vps.okoproject.com:49180/oktics-api';
 
 const errIsExercise = "selected exercise does not exist";
-const errEstimatedPases = "unable to estimate poses";
+const errEstimatedPoses = "unable to estimate poses";
 
 export const exerciseResult = async (detector, params, image) =>  {
     try {
@@ -16,11 +16,12 @@ export const exerciseResult = async (detector, params, image) =>  {
         let results = poses[0];
 
         // Handle exceptions
-        if (typeof poses === "undefined" || poses == null) throw errEstimatedPases;
+        if (typeof poses === "undefined" || poses == null) throw errEstimatedPoses;
         if (typeof params.id === "undefined" || params.id == null) throw errIsExercise;
 
         // Getting repetions
-        controlExercise(results, params);
+        let status = controlExercise(results, params);
+        if (status == -1) throw errEstimatedPoses;
 
         // Return
         return {
