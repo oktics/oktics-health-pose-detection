@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": "https://github.com/oktics/oktics-health-pose",
-  "author": "Oktics",
+  "author": "Oktics ATZ SL",
   "license": "MIT",
   "dependencies": {
     "@tensorflow-models/pose-detection": "^2.0.0",

@@ -20,15 +20,17 @@ export const exerciseResult = async (detector, params, image) =>  {
         if (typeof params.id === "undefined" || params.id == null) throw errIsExercise;
 
         // Getting repetions
+        let error = '';
         let status = controlExercise(results, params);
-        if (status == -1) throw errEstimatedPoses;
+        if (status == -1) error = errEstimatedPoses; // Some of the required poses are not available
 
         // Return
         return {
-            status: 0,
+            status: status,
             keypoints: results.keypoints,
             keypoints3D: results.keypoints3D,
-            repetitions: repetitionsCounter
+            repetitions: repetitionsCounter,
+            error: error
         }
 
     } catch (error) {
