@@ -8,6 +8,7 @@ const healthApi = 'https://vps.okoproject.com:49180/oktics-api';
 
 const errIsExercise = "selected exercise does not exist";
 const errEstimatedPoses = "unable to estimate poses";
+const errControlExercise = "unable to estimate exercise information";
 
 export const exerciseResult = async (detector, params, image) =>  {
     try {
@@ -22,7 +23,8 @@ export const exerciseResult = async (detector, params, image) =>  {
         // Getting repetions
         let error = '';
         let status = controlExercise(results, params);
-        if (status == -1) error = errEstimatedPoses; // Some of the required poses are not available
+        // Some of the required poses are not available
+        if (status == -1) error = errControlExercise;
 
         // Return
         return {
