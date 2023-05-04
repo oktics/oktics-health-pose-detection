@@ -3,7 +3,7 @@ import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
 import '@mediapipe/pose';
 
-import controlExercise, {repetitionsCounter} from "./controlExercise.js";
+import controlExercise, {repetitionsCounter, holdStatus, successPercentage} from "./controlExercise.js";
 const healthApi = 'https://vps.okoproject.com:49180/oktics-api';
 
 const errIsExercise = "selected exercise does not exist";
@@ -32,6 +32,8 @@ export const exerciseResult = async (detector, params, image) =>  {
             keypoints: results.keypoints,
             keypoints3D: results.keypoints3D,
             repetitions: repetitionsCounter,
+            holdStatus: holdStatus,
+            successPercentage: successPercentage,
             error: error
         }
 
@@ -86,6 +88,20 @@ export const getExercisesList = async () => {
     }
 }
 
+export const getExerciseMinDuration = async (id) => {
+    try {
+        let url = healthApi + '/exercise_id';
+        let res = await axios.post(url,
+            { exerciseId: id });
+        let data = res.data.data;
+        return data.params.minDuration;
+    }
+    catch (error) {
+        console.log(error);
+        return "";
+    }
+}
+
 export default class PoseExercise {
     // runtime: 'mediapipe' or 'tfjs'
     constructor(selectedExercise,
@@ -115,16 +131,9 @@ export default class PoseExercise {
     async getExParams() {
         try {                     
             if (typeof this.selectedExercise !== "number") return "";
-            let urlExerciseList = healthApi + '/exercise_list';
-            let res = await axios.get(urlExerciseList);
-            let exerciseList = res.data.data;
-            const getItemByKey = (key) => {
-                return exerciseList.find((item) => item.id === key);
-            };
-            const exercise = getItemByKey(this.selectedExercise);
-            urlExerciseList = healthApi + '/exercise';
-            res = await axios.post(urlExerciseList,
-                { name: exercise.name });
+            let url = healthApi + '/exercise_id';
+            let res = await axios.post(url,
+                { exerciseId: this.selectedExercise });
             let data = res.data.data;
             return data.params;
         }

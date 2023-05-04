@@ -257,12 +257,24 @@ The x and y are in pixel units.
 The x, y, z are in meter units. The body structure is considered as if it were in a 2m x 2m x 2m cube. 
 Each axis in a range from -1 to 1.
 
+*repetitions*: repetitions counter.
+
+*holdStatus*: code status 0 means the position is ready to start the exercise (e.g. arms down before starting the "Arms Raise" exercise). 
+Code status 1 means that the position of the exercise is maintained (for example, arms up in exercise "Raise arms"). 
+Code status -1 means that the body is in an intermediate position between the starting point and the correct execution of the exercise.
+
+*successPercentage*: position success rate: 100% means that the exercise position is the reference position, 0% means that the body is in the starting position.
+
+*error*: error message. If there has been an error other results cannot be available.
+
 ```
 {status: 0,
 keypoints: Array(33), 
 keypoints3D: Array(33), 
-score: 0.9999525547027588, 
-repetitions: 0}
+repetitions: repetitionsCounter,
+holdStatus: holdStatus,
+successPercentage: successPercentage,
+error: error}
 
 keypoints: [
     0: {x: 406, y: 275, z: -817691, score: 0.99, name: 'nose'}
@@ -290,10 +302,38 @@ Error: "unable to estimate poses"
 Solution: This error occurs when the PoseExercise detector is not able to estimate poses. 
 Check image input to 'exerciseResultFromRGBArray()' or 'exerciseResult()'.
 
+Error: "unable to estimate exercise information"
+Solution: This error occures when the required poses to evaluate exercise are not correctly estimated.
+Check image or frame input to 'exerciseResultFromRGBArray()' or 'exerciseResult()'.
+
 ```
 {"status":-1,
 "error":"selected exercise does not exist"}
 ```
+
+### Exercise holding duration
+
+'getExerciseMinDuration(id)'
+This function returns the time that the exercise must be holded in each repetition, in seconds.
+
+Parameters:
+
+*   *id*: exercise id.
+
+Usage example:
+
+```javascript
+    import {getExerciseMinDuration} from '@oktics/oktics-health-pose';
+
+    function getExerciseDuration() {
+        ...
+        // Squats minimum duration
+        let duration = await getExerciseMinDuration(101);
+        console.log('duration: ' + duration);
+        ...
+    }
+```
+
 
 #### License
 
