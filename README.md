@@ -120,6 +120,9 @@ Parameters:
 
 *   *height*: image height.
 
+*   *duration (optional)*: exercise duration, time that the position must be maintained for the repetition to be considered.
+By default, no se considera necesaria ninguna duration (duration = 0).
+
 ```javascript
     let results = await exerciseResultFromRGBArray(detector, params, rgbArray, width, height);
 ```
@@ -211,6 +214,9 @@ Parameters:
 
 *   *frame*: accepts both image and video in many formats, including: 
 'HTMLVideoElement', 'HTMLImageElement', 'HTMLCanvasElement'.
+
+*   *duration (optional)*: exercise duration, time that the position must be maintained for the repetition to be considered.
+By default, no se considera necesaria ninguna duration (duration = 0).
 
 ```javascript
     let results = await exerciseResult(detector, params, frame);
