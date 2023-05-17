@@ -10,7 +10,7 @@ const errIsExercise = "selected exercise does not exist";
 const errEstimatedPoses = "unable to estimate poses";
 const errControlExercise = "unable to estimate exercise information";
 
-export const exerciseResult = async (detector, params, image) =>  {
+export const exerciseResult = async (detector, params, image, duration = 0) =>  {
     try {
         // Getting keypoints
         let poses = await getKeyPoints(detector, image);
@@ -22,7 +22,7 @@ export const exerciseResult = async (detector, params, image) =>  {
 
         // Getting repetions
         let error = '';
-        let status = controlExercise(results, params);
+        let status = controlExercise(results, params, duration);
         // Some of the required poses are not available
         if (status == -1) error = errControlExercise;
 
@@ -43,7 +43,7 @@ export const exerciseResult = async (detector, params, image) =>  {
     }
 }
 
-export const exerciseResultFromRGBArray = async (detector, params, rgbArray, width, height) => {
+export const exerciseResultFromRGBArray = async (detector, params, rgbArray, width, height, duration = 0) => {
     try {
         const dataArray = new Uint8ClampedArray(width * height * 4);
         for (let i = 0; i < width * height; i++) {
@@ -53,7 +53,7 @@ export const exerciseResultFromRGBArray = async (detector, params, rgbArray, wid
             dataArray[i * 4 + 3] = 255; // set alpha channel to 255
         }
         let image = new ImageData(dataArray, width, height);
-        let results = await exerciseResult(detector, params, image);
+        let results = await exerciseResult(detector, params, image, duration);
         return results;
 
     } catch (error) {

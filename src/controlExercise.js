@@ -11,13 +11,12 @@ let lastExercise = '';
 let timer;
 let counter = 0;
 
-export default function controlExercise(results, exercise) {
+export default function controlExercise(results, exercise, minDuration) {
 
 	// Init counter when changing exercise
 	if (exercise.name !== lastExercise) repetitionsCounter = 0;
 	lastExercise = exercise.name;
 
-	let minDuration = exercise.minDuration;
 	let kps = exercise.kpDegrees.flat();
 	const isAboveThreshold = (currentValue) =>
 		results.keypoints3D[currentValue].score > 0.5;
