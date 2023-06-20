@@ -3,7 +3,10 @@ import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
 import '@mediapipe/pose';
 
-import controlExercise, {repetitionsCounter, holdStatus, successPercentage} from "./controlExercise.js";
+import controlExercise, { repetitionsCounter, holdStatus, successPercentage } from "./controlExercise.js";
+import { resetRepetitionsCounter } from "./controlExercise.js";
+export { resetRepetitionsCounter }
+
 const healthApi = 'https://vps.okoproject.com:49180/oktics-api';
 
 const errIsExercise = "selected exercise does not exist";

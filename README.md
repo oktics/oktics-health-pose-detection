@@ -89,7 +89,12 @@ Output:
 
 ### Init PoseExercise model and create a detector
 
+'PoseExercise()'
 Create new instance of PoseExercise object.
+
+Parameters:
+
+*   *exerciseID* {int}: exercise identifier from getExercisesList()
 
 Example:
 
@@ -110,15 +115,15 @@ This function returns the keypoints and number of repetitions from the webcam vi
 
 Parameters:
 
-*   *detector*: used to detect poses, returned from the model init method (new PoseExercise).
+*   *detector* {PoseExercise Object}: used to detect poses, returned from the model init method (new PoseExercise).
 
-*   *params*: exercise parameters, returned from the model init method (new PoseExercise).
+*   *params* {JSON Object}: exercise parameters, returned from the model init method (new PoseExercise).
 
-*   *rgbArray*: rgb24 image array ([r,g,b,r,g,b,r,g,b,...]).
+*   *rgbArray* {Uint8Array Object}: rgb24 image array ([r,g,b,r,g,b,r,g,b,...]).
 
-*   *width*: image width.
+*   *width* {int}: image width.
 
-*   *height*: image height.
+*   *height* {int}: image height.
 
 *   *duration (optional)*: exercise duration, time that the position must be maintained for the repetition to be considered.
 By default, no duration is considered necessary (duration = 0).
@@ -208,14 +213,14 @@ This function returns the keypoints and number of repetitions from the webcam vi
 
 Parameters:
 
-*   *detector*: used to detect poses, returned from the model init method (new PoseExercise).
+*   *detector* {PoseExercise Object}: used to detect poses, returned from the model init method (new PoseExercise).
 
-*   *params*: exercise parameters, returned from the model init method (new PoseExercise).
+*   *params* {JSON Object}: exercise parameters, returned from the model init method (new PoseExercise).
 
-*   *frame*: accepts both image and video in many formats, including: 
+*   *frame* {HTMLVideoElement, HTMLImageElement, HTMLCanvasElement}: accepts both image and video in many formats, including: 
 'HTMLVideoElement', 'HTMLImageElement', 'HTMLCanvasElement'.
 
-*   *duration (optional)*: exercise duration, time that the position must be maintained for the repetition to be considered.
+*   *duration {int} (optional)*: exercise duration, time that the position must be maintained for the repetition to be considered.
 By default, no duration is considered necessary (duration = 0).
 
 ```javascript
@@ -324,7 +329,7 @@ This function returns the time that the exercise must be holded in each repetiti
 
 Parameters:
 
-*   *id*: exercise id.
+*   *id* {int}: exercise id.
 
 Usage example:
 
@@ -339,6 +344,34 @@ Usage example:
         ...
     }
 ```
+
+## Export Constants
+
+The library exports the following constants:
+
+### `getAdjacentPairs`
+
+- Description: Return the list of adjacent pairs of keypoints to draw the skeleton.
+- Usage example:
+
+  ```javascript
+  // Usage example
+  import { getAdjacentPairs } from '@oktics/oktics-health-pose"';
+
+  console.log(getAdjacentPairs); // Output: the value of the constant
+  ```
+
+  ### `getAdjacentPairsWithoutFace`
+
+- Description: Return the list of adjacent pairs of keypoints to draw the skeleton without the keypoints corresponding to the face.
+- Usage example:
+
+  ```javascript
+  // Usage example
+  import { getAdjacentPairsWithoutFace } from '@oktics/oktics-health-pose"';
+
+  console.log(getAdjacentPairsWithoutFace); // Output: the value of the constant
+  ```
 
 
 #### License

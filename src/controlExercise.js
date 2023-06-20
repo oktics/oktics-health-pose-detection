@@ -11,6 +11,10 @@ let lastExercise = '';
 let timer;
 let counter = 0;
 
+export function resetRepetitionsCounter() {
+	repetitionsCounter = 0;
+}
+
 export default function controlExercise(results, exercise, minDuration) {
 
 	// Init counter when changing exercise
