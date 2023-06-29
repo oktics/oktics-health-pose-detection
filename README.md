@@ -62,25 +62,21 @@ Output:
   {
     "id": 101,
     "name": "Squats",
-    "rep": 4,
     "image": "https://okobusiness.com/wp-content/uploads/sites/23/2022/11/squats.jpg"
   },
   {
     "id": 102,
     "name": "Arms Raise",
-    "rep": 4,
     "image": "https://okobusiness.com/wp-content/uploads/sites/23/2022/11/arms.jpg"
   },
   {
     "id": 103,
     "name": "Bicep Curl",
-    "rep": 4,
     "image": "https://okobusiness.com/wp-content/uploads/sites/23/2022/11/biceps.jpg"
   },
   {
     "id": 104,
     "name": "Lateral Shoulder",
-    "rep": 4,
     "image": "https://okobusiness.com/wp-content/uploads/sites/23/2022/11/shoulder.jpg"
   }
 ]
@@ -89,7 +85,11 @@ Output:
 
 ### Init PoseExercise model and create a detector
 
-Create new instance of PoseExercise object.
+'PoseExercise()' Create new instance of PoseExercise object.
+
+Parameters:
+
+*   *exerciseID* {int}: exercise identifier from getExercisesList()
 
 Example:
 
@@ -110,15 +110,15 @@ This function returns the keypoints and number of repetitions from the webcam vi
 
 Parameters:
 
-*   *detector*: used to detect poses, returned from the model init method (new PoseExercise).
+*   *detector* {PoseExercise Object}: used to detect poses, returned from the model init method (new PoseExercise).
 
-*   *params*: exercise parameters, returned from the model init method (new PoseExercise).
+*   *params* {JSON Object}: exercise parameters, returned from the model init method (new PoseExercise).
 
-*   *rgbArray*: rgb24 image array ([r,g,b,r,g,b,r,g,b,...]).
+*   *rgbArray* {Uint8Array Object}: rgb24 image array ([r,g,b,r,g,b,r,g,b,...]).
 
-*   *width*: image width.
+*   *width* {int}: image width.
 
-*   *height*: image height.
+*   *height* {int}: image height.
 
 ```javascript
     let results = await exerciseResultFromRGBArray(detector, params, rgbArray, width, height);
@@ -205,11 +205,11 @@ This function returns the keypoints and number of repetitions from the webcam vi
 
 Parameters:
 
-*   *detector*: used to detect poses, returned from the model init method (new PoseExercise).
+*   *detector* {PoseExercise Object}: used to detect poses, returned from the model init method (new PoseExercise).
 
-*   *params*: exercise parameters, returned from the model init method (new PoseExercise).
+*   *params* {JSON Object}: exercise parameters, returned from the model init method (new PoseExercise).
 
-*   *frame*: accepts both image and video in many formats, including: 
+*   *frame* {HTMLVideoElement, HTMLImageElement, HTMLCanvasElement}: accepts both image and video in many formats, including: 
 'HTMLVideoElement', 'HTMLImageElement', 'HTMLCanvasElement'.
 
 ```javascript
