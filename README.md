@@ -322,29 +322,6 @@ Check image or frame input to 'exerciseResultFromRGBArray()' or 'exerciseResult(
 "error":"selected exercise does not exist"}
 ```
 
-### Exercise holding duration
-
-'getExerciseMinDuration(id)'
-This function returns the time that the exercise must be holded in each repetition, in seconds.
-
-Parameters:
-
-*   *id* {int}: exercise id.
-
-Usage example:
-
-```javascript
-    import {getExerciseMinDuration} from '@oktics/oktics-health-pose';
-
-    function getExerciseDuration() {
-        ...
-        // Squats minimum duration
-        let duration = await getExerciseMinDuration(101);
-        console.log('duration: ' + duration);
-        ...
-    }
-```
-
 ## Export Constants
 
 The library exports the following constants:

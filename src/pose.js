@@ -3,9 +3,8 @@ import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
 import '@mediapipe/pose';
 
-import controlExercise, { repetitionsCounter, holdStatus, successPercentage } from "./controlExercise.js";
-import { resetRepetitionsCounter } from "./controlExercise.js";
-export { resetRepetitionsCounter }
+import controlExercise, { repetitionsCounter, holdStatus, successPercentage} from "./controlExercise.js";
+import { initExercise } from "./controlExercise.js";
 
 const healthApi = 'https://vps.okoproject.com:49180/oktics-api';
 
@@ -91,20 +90,6 @@ export const getExercisesList = async () => {
     }
 }
 
-export const getExerciseMinDuration = async (id) => {
-    try {
-        let url = healthApi + '/exercise_id';
-        let res = await axios.post(url,
-            { exerciseId: id });
-        let data = res.data.data;
-        return data.params.minDuration;
-    }
-    catch (error) {
-        console.log(error);
-        return "";
-    }
-}
-
 export default class PoseExercise {
     // runtime: 'mediapipe' or 'tfjs'
     constructor(selectedExercise,
@@ -119,6 +104,7 @@ export default class PoseExercise {
         this.selectedExercise = selectedExercise;
         this.params = this.getExParams();
         this.detector = this.initDetector();
+        initExercise();
     }
 
     async initDetector() {
