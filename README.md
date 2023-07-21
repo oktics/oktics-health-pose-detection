@@ -62,21 +62,25 @@ Output:
   {
     "id": 101,
     "name": "Squats",
+    "rep": 4,
     "image": "https://okobusiness.com/wp-content/uploads/sites/23/2022/11/squats.jpg"
   },
   {
     "id": 102,
     "name": "Arms Raise",
+    "rep": 4,
     "image": "https://okobusiness.com/wp-content/uploads/sites/23/2022/11/arms.jpg"
   },
   {
     "id": 103,
     "name": "Bicep Curl",
+    "rep": 4,
     "image": "https://okobusiness.com/wp-content/uploads/sites/23/2022/11/biceps.jpg"
   },
   {
     "id": 104,
     "name": "Lateral Shoulder",
+    "rep": 4,
     "image": "https://okobusiness.com/wp-content/uploads/sites/23/2022/11/shoulder.jpg"
   }
 ]
@@ -85,7 +89,8 @@ Output:
 
 ### Init PoseExercise model and create a detector
 
-'PoseExercise()' Create new instance of PoseExercise object.
+'PoseExercise()'
+Create new instance of PoseExercise object.
 
 Parameters:
 
@@ -119,6 +124,9 @@ Parameters:
 *   *width* {int}: image width.
 
 *   *height* {int}: image height.
+
+*   *duration (optional)*: exercise duration, time that the position must be maintained for the repetition to be considered.
+By default, no duration is considered necessary (duration = 0).
 
 ```javascript
     let results = await exerciseResultFromRGBArray(detector, params, rgbArray, width, height);
@@ -212,6 +220,9 @@ Parameters:
 *   *frame* {HTMLVideoElement, HTMLImageElement, HTMLCanvasElement}: accepts both image and video in many formats, including: 
 'HTMLVideoElement', 'HTMLImageElement', 'HTMLCanvasElement'.
 
+*   *duration {int} (optional)*: exercise duration, time that the position must be maintained for the repetition to be considered.
+By default, no duration is considered necessary (duration = 0).
+
 ```javascript
     let results = await exerciseResult(detector, params, frame);
 ```
@@ -257,12 +268,24 @@ The x and y are in pixel units.
 The x, y, z are in meter units. The body structure is considered as if it were in a 2m x 2m x 2m cube. 
 Each axis in a range from -1 to 1.
 
+*repetitions*: repetitions counter.
+
+*holdStatus*: code status 0 means the position is ready to start the exercise (e.g. arms down before starting the "Arms Raise" exercise). 
+Code status 1 means that the position of the exercise is maintained (for example, arms up in exercise "Raise arms"). 
+Code status -1 means that the body is in an intermediate position between the starting point and the correct execution of the exercise.
+
+*successPercentage*: position success rate: 100% means that the exercise position is the reference position, 0% means that the body is in the starting position.
+
+*error*: error message. If there has been an error other results cannot be available.
+
 ```
 {status: 0,
 keypoints: Array(33), 
 keypoints3D: Array(33), 
-score: 0.9999525547027588, 
-repetitions: 0}
+repetitions: repetitionsCounter,
+holdStatus: holdStatus,
+successPercentage: successPercentage,
+error: error}
 
 keypoints: [
     0: {x: 406, y: 275, z: -817691, score: 0.99, name: 'nose'}
@@ -290,10 +313,43 @@ Error: "unable to estimate poses"
 Solution: This error occurs when the PoseExercise detector is not able to estimate poses. 
 Check image input to 'exerciseResultFromRGBArray()' or 'exerciseResult()'.
 
+Error: "unable to estimate exercise information"
+Solution: This error occures when the required poses to evaluate exercise are not correctly estimated.
+Check image or frame input to 'exerciseResultFromRGBArray()' or 'exerciseResult()'.
+
 ```
 {"status":-1,
 "error":"selected exercise does not exist"}
 ```
+
+## Export Constants
+
+The library exports the following constants:
+
+### `getAdjacentPairs`
+
+- Description: Return the list of adjacent pairs of keypoints to draw the skeleton.
+- Usage example:
+
+  ```javascript
+  // Usage example
+  import { getAdjacentPairs } from '@oktics/oktics-health-pose"';
+
+  console.log(getAdjacentPairs); // Output: the value of the constant
+  ```
+
+  ### `getAdjacentPairsWithoutFace`
+
+- Description: Return the list of adjacent pairs of keypoints to draw the skeleton without the keypoints corresponding to the face.
+- Usage example:
+
+  ```javascript
+  // Usage example
+  import { getAdjacentPairsWithoutFace } from '@oktics/oktics-health-pose"';
+
+  console.log(getAdjacentPairsWithoutFace); // Output: the value of the constant
+  ```
+
 
 #### License
 
