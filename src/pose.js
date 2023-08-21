@@ -90,20 +90,6 @@ export const getExercisesList = async () => {
     }
 }
 
-export const getExParams = async (selectedExercise) => {
-    try {
-        if (typeof selectedExercise !== "number") return "";
-        let url = healthApi + '/exercise_id';
-        let res = await axios.post(url,
-            { exerciseId: selectedExercise });
-        let data = res.data.data;
-        return data.params;
-    }
-    catch (error) {
-        return "";
-    }
-}
-
 export default class PoseExercise {
     // runtime: 'mediapipe' or 'tfjs'
     constructor(selectedExercise,
@@ -115,8 +101,9 @@ export default class PoseExercise {
         this.model = poseDetection.SupportedModels.BlazePose;
 
         // Exercise
-        this.params = getExParams(selectedExercise);
-        this.detector = this.initDetector();
+        this.selectedExercise = selectedExercise;
+        this.params = this.getExParams();
+        if (typeof this.detector === 'undefined') this.detector = this.initDetector();
         initExercise();
     }
 
@@ -128,6 +115,21 @@ export default class PoseExercise {
             solutionPath: 'https://vps.okoproject.com/oktics-health/@mediapipe/pose/'
         }
         return await poseDetection.createDetector(this.model, detectorConfig);
+    }
+
+    async getExParams() {
+        try {
+            if (typeof this.selectedExercise !== "number") return "";
+            let url = healthApi + '/exercise_id';
+            let res = await axios.post(url,
+                { exerciseId: this.selectedExercise });
+            let data = res.data.data;
+            return data.params;
+        }
+        catch (error) {
+            //console.log(error);
+            return "";
+        }
     }
 }
 
