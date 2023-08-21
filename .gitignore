@@ -11,3 +11,6 @@ __pycache__/
 .tox/
 .coverage
 .cache
+
+# Visual Studio cache/options directory
+.vs/
