@@ -105,7 +105,26 @@ Example:
     async function initDetector() {
         const exerciseId = selectedExercise;
         const pose = new PoseExercise(exerciseId);
+        const params = await pose.params;
+        const detector = await pose.detector;
     }
+```
+
+### Update exercise model
+
+'updateExercise()'
+Get exercise parameters to be used by 'exerciseResultFromRGBArray()' and 'exerciseResult()'.
+
+Parameters:
+
+*   *exerciseID* {int}: exercise identifier from getExercisesList()
+
+Example:
+
+```javascript
+    // Update exercise model
+    const exerciseId = selectedExercise;
+    const params = updateExercise(exerciseId);
 ```
 
 ### Get keypoints and number of repetitions from rgb24 image array ([r,g,b,r,g,b,r,g,b,...])

@@ -90,6 +90,20 @@ export const getExercisesList = async () => {
     }
 }
 
+export const updateExercise = async (selectedExercise) => {
+    try {
+        if (typeof selectedExercise !== "number") return "";
+        let url = healthApi + '/exercise_id';
+        let res = await axios.post(url,
+            { exerciseId: selectedExercise });
+        let data = res.data.data;
+        return data.params;
+    }
+    catch (error) {
+        return "";
+    }
+}
+
 export default class PoseExercise {
     // runtime: 'mediapipe' or 'tfjs'
     constructor(selectedExercise,
