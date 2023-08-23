@@ -280,7 +280,13 @@ export default function controlExercise(results, exercise, minDuration) {
 		const averageLeft = average(successLeft);
 		const averageRight = average(successRight);
 		// Success percentage
-		successPercentage = [averageLeft, averageRight];
+		if (mode == 'left') {
+			successPercentage = [averageLeft, ''];
+		} else if (mode == 'right') {
+			successPercentage = ['', averageRight];
+		} else {
+			successPercentage = [averageLeft, averageRight];
+		}
 	}
 	return 0;
 }
@@ -318,7 +324,15 @@ const controlExerciseDo = (condition, results, params, mode, space) => {
 		let side = [0, 1]; // right, left
 		side.forEach(i => {
 			kps = params.kpDegrees[i];
-			angles.push(getAngle(kps, results, space));
+			if ((mode == 'left' && i == 0) || (mode == 'right' && i == 1)) {
+				angles.push(0);
+			} else {
+				if (typeof (params.projPlanes) !== 'undefined') {
+					angles.push(getAngle(kps, results, space, params.projPlanes[i]));
+				} else {
+					angles.push(getAngle(kps, results, space));
+				}
+			}
 		});
 
 		if (mode != 'both') {
@@ -354,7 +368,12 @@ const controlExerciseDo = (condition, results, params, mode, space) => {
 					side.forEach(i => {
 						var kps = params.requirement[condition].kpDegrees[i];
 						if (kps.length > 0) {
-							var a = getAngle(kps, results, space);
+							var a;
+							if (typeof (params.requirement[condition].projPlanes) !== 'undefined') {
+								a = getAngle(kps, results, space, params.requirement[condition].projPlanes[i]);
+							} else {
+								a = getAngle(kps, results, space);
+							}
 							var cnd = a + ' ' + params.requirement[condition].condition;
 							var res = eval(cnd);
 							if (res) {
@@ -382,6 +401,7 @@ const controlExerciseDo = (condition, results, params, mode, space) => {
 				if ((mode == 'left' && i == 0) || (mode == 'right' && i == 1)) {
 					percentages.push(0);
 				} else {
+					if (params.refDegree == 0) params.refDegree = 1;
 					let success = 100 * ((params.refDegree - Math.abs(params.refDegree - angles[i])) / params.refDegree);
 					if (success < 0) success = 0;
 					percentages.push(success);
@@ -403,17 +423,36 @@ const average = (elmt) => {
 	return avg;
 }
 
-const getAngle = (kps, results, space) => {
+const getAngle = (kps, results, space, projPlanes = "") => {
 
 	var angle;
 	var points = [];
+	var plane = "";
 	if (kps.length > 0) {
+		let i = 0;
 		kps.forEach(element => {
+			if (projPlanes.length > 1) {
+				plane = projPlanes[i];
+				i++;
+			}
 			let point = {
 				x: results.keypoints3D[element].x,
 				y: results.keypoints3D[element].y,
 				z: results.keypoints3D[element].z
 			};
+			if (plane === 'YZ') {
+				// YZ-projection
+				const surface = { A: 1, B: 0, C: 0, D: 1 }
+				point = calculateProjection(point, surface);
+			} else if (plane === 'XZ') {
+				// XZ-projection
+				const surface = { A: 0, B: 1, C: 0, D: -1 }
+				point = calculateProjection(point, surface);
+			} else if (plane === 'XY') {
+				// XY-projection
+				const surface = { A: 0, B: 0, C: 1, D: 1 }
+				point = calculateProjection(point, surface);
+			}
 			points.push(point);
 		});
 		if (space === "3D") {
@@ -423,6 +462,22 @@ const getAngle = (kps, results, space) => {
 		}
 	}
 	return angle;
+}
+
+const calculateProjection = (point, surface) => {
+	// Plane equation: Ax + By + Cz + D = 0
+	const { x: px, y: py, z: pz } = point;
+	const { A, B, C, D } = surface;
+
+	// Calculate the distance from the point to the surface
+	const distance = (A * px + B * py + C * pz + D) / Math.sqrt(A * A + B * B + C * C);
+
+	// Calculate the coordinates of the projection point
+	const projectionX = px - A * distance;
+	const projectionY = py - B * distance;
+	const projectionZ = pz - C * distance;
+
+	return { x: projectionX, y: projectionY, z: projectionZ };
 }
 
 const getConditionSide = (mode, side) => {
