@@ -92,6 +92,7 @@ export const getExercisesList = async () => {
 
 export const updateExercise = async (selectedExercise) => {
     try {
+        initExercise();
         if (typeof selectedExercise !== "number") return "";
         let url = healthApi + '/exercise_id';
         let res = await axios.post(url,
