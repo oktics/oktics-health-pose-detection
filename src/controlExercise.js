@@ -342,7 +342,7 @@ const controlExerciseDo = (condition, results, params, mode, space, difficulty) 
 		}
 
 		// Difficulty level
-		const [minDegree, maxDegree] = setDifficultyLevel(params.minDegree, params.refDegree, params.change, difficulty);
+		const [minDegree, maxDegree] = setDifficultyLevel(params.minDegree, params.maxDegree, params.change, difficulty);
 
 		// Initial and final exercise position
 		if (posicioInici && accomplishReq[condition] && (
