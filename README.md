@@ -129,7 +129,7 @@ Example:
 
 ### Get keypoints and number of repetitions from rgb24 image array ([r,g,b,r,g,b,r,g,b,...])
 
-'exerciseResultFromRGBArray()'
+'exerciseResultFromRGBArray(detector, params, rgbArray, width, height, duration = 0, difficulty = 2))'
 This function returns the keypoints and number of repetitions from the webcam video.
 
 Parameters:
@@ -144,8 +144,13 @@ Parameters:
 
 *   *height* {int}: image height.
 
-*   *duration (optional)*: exercise duration, time that the position must be maintained for the repetition to be considered.
+*   *duration* {int}: exercise duration, time that the position must be maintained for the repetition to be considered.
 By default, no duration is considered necessary (duration = 0).
+
+*   *difficulty* {int}: exercise difficulty level. By default, moderate difficulty is considered 
+(difficulty = 1 means low level, difficulty = 2 means moderate level, difficulty = 3 means high level).
+
+
 
 ```javascript
     let results = await exerciseResultFromRGBArray(detector, params, rgbArray, width, height);
@@ -227,7 +232,7 @@ Usage example:
 
 ### Get keypoints and number of repetitions from the webcam video.
 
-'exerciseResult()'
+'exerciseResult(detector, params, image, duration = 0, difficulty = 2))'
 This function returns the keypoints and number of repetitions from the webcam video.
 
 Parameters:
@@ -239,8 +244,11 @@ Parameters:
 *   *frame* {HTMLVideoElement, HTMLImageElement, HTMLCanvasElement}: accepts both image and video in many formats, including: 
 'HTMLVideoElement', 'HTMLImageElement', 'HTMLCanvasElement'.
 
-*   *duration {int} (optional)*: exercise duration, time that the position must be maintained for the repetition to be considered.
+*   *duration* {int}: exercise duration, time that the position must be maintained for the repetition to be considered.
 By default, no duration is considered necessary (duration = 0).
+
+*   *difficulty* {int}: exercise difficulty level. By default, moderate difficulty is considered 
+(difficulty = 1 means low level, difficulty = 2 means moderate level, difficulty = 3 means high level).
 
 ```javascript
     let results = await exerciseResult(detector, params, frame);

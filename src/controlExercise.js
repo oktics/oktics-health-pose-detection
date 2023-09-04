@@ -23,6 +23,7 @@ export function initExercise() {
 	toggle = false;
 }
 
+// deprecated function
 export function controlExerciseSingleCondition(results, exercise, minDuration) {
 
 	// Init counter when changing exercise
@@ -184,7 +185,7 @@ export function controlExerciseSingleCondition(results, exercise, minDuration) {
 	}
 }
 
-export default function controlExercise(results, exercise, minDuration) {
+export default function controlExercise(results, exercise, minDuration, difficulty) {
 
 	// Init counter when changing exercise
 	if (exercise.name !== lastExercise) repetitionsCounter = 0;
@@ -224,7 +225,7 @@ export default function controlExercise(results, exercise, minDuration) {
 			}
 			req[i] = 0;
 		}
-		const [status, percentages] = controlExerciseDo(i, results, paramSet, mode, space);
+		const [status, percentages] = controlExerciseDo(i, results, paramSet, mode, space, difficulty);
 		states.push(status);
 		successP.push(percentages);
 	}
@@ -291,7 +292,7 @@ export default function controlExercise(results, exercise, minDuration) {
 	return 0;
 }
 
-const controlExerciseDo = (condition, results, params, mode, space) => {
+const controlExerciseDo = (condition, results, params, mode, space, difficulty) => {
 	let status;
 	let percentages = [];
 	let angle;
@@ -340,16 +341,21 @@ const controlExerciseDo = (condition, results, params, mode, space) => {
 			angle = angles[i];
 		}
 
+		// Difficulty level
+		const [minDegree, maxDegree] = setDifficultyLevel(params.minDegree, params.refDegree, params.change, difficulty);
+
 		// Initial and final exercise position
-		if (posicioInici && accomplishReq[condition] && ((params.change == 'less2more' && angle > params.maxDegree && mode != 'both') ||
-			(params.change == 'less2more' && angles[0] > params.maxDegree && angles[1] > params.maxDegree && mode == 'both') ||
-			(params.change == 'more2less' && angle < params.minDegree && mode != 'both') ||
-			(params.change == 'more2less' && angles[0] < params.minDegree && angles[1] < params.minDegree && mode == 'both'))) {
+		if (posicioInici && accomplishReq[condition] && (
+			(params.change == 'less2more' && angle > maxDegree && mode != 'both') ||
+			(params.change == 'less2more' && angles[0] > maxDegree && angles[1] > maxDegree && mode == 'both') ||
+			(params.change == 'more2less' && angle < minDegree && mode != 'both') ||
+			(params.change == 'more2less' && angles[0] < minDegree && angles[1] < minDegree && mode == 'both'))) {
 			status = 1;
-		} else if (posicioFinal && ((params.change == 'more2less' && angle > params.maxDegree && mode != "both") ||
-			(params.change == 'more2less' && angles[0] > params.maxDegree && angles[1] > params.maxDegree && mode == 'both') ||
-			(params.change == 'less2more' && angle < params.minDegree && mode != 'both') ||
-			(params.change == 'less2more' && angles[0] < params.minDegree && angles[1] < params.minDegree && mode == 'both'))) {
+		} else if (posicioFinal && (
+			(params.change == 'more2less' && angle > maxDegree && mode != "both") ||
+			(params.change == 'more2less' && angles[0] > maxDegree && angles[1] > maxDegree && mode == 'both') ||
+			(params.change == 'less2more' && angle < minDegree && mode != 'both') ||
+			(params.change == 'less2more' && angles[0] < minDegree && angles[1] < minDegree && mode == 'both'))) {
 			status = 0;
 			if (typeof params.requirement !== "undefined") accomplishReq[condition] = false;
 		} else {
@@ -412,6 +418,30 @@ const controlExerciseDo = (condition, results, params, mode, space) => {
 		//console.log('invalid')
 	}
 	return [status, percentages, angles];
+}
+
+const setDifficultyLevel = (minDegree, maxDegree, change, difficulty) => {
+	// Only apply to the exercise final position accuracy
+	// difficulty:
+	// 1: low
+	// 2: normal (default)
+	// 3: high
+	if (difficulty !== 2) {
+		if (change === 'less2more') {
+			if (difficulty === 1) {
+				maxDegree = maxDegree - 15;
+			} else if (difficulty === 3) {
+				maxDegree = maxDegree + 5;
+			}
+		} else {
+			if (difficulty === 1) {
+				minDegree = minDegree + 15;
+			} else if (difficulty === 3) {
+				minDegree = minDegree - 5;
+			}
+		}
+	}
+	return [minDegree, maxDegree];
 }
 
 const average = (elmt) => {

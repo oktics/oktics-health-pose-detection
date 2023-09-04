@@ -11,8 +11,10 @@ const healthApi = 'https://vps.okoproject.com:49180/oktics-api';
 const errIsExercise = "selected exercise does not exist";
 const errEstimatedPoses = "unable to estimate poses";
 const errControlExercise = "unable to estimate exercise information";
+const errDifficultyLevel = "incorrent exercise difficulty level";
+const errDuration = "incorrent exercise duration";
 
-export const exerciseResult = async (detector, params, image, duration = 0) =>  {
+export const exerciseResult = async (detector, params, image, duration = 0, difficulty = 2) =>  {
     try {
         // Getting keypoints
         let poses = await getKeyPoints(detector, image);
@@ -23,10 +25,19 @@ export const exerciseResult = async (detector, params, image, duration = 0) =>  
         if (typeof params.id === "undefined" || params.id == null) throw errIsExercise;
 
         // Getting repetions
+        let status;
         let error = '';
-        let status = controlExercise(results, params, duration);
-        // Some of the required poses are not available
-        if (status == -1) error = errControlExercise;
+        if (typeof difficulty !== "number" || difficulty < 1 || difficulty > 3) {
+            status = -1;
+            error = errDifficultyLevel;
+        } else if (typeof duration !== "number" || duration < 0) {
+            status = -1;
+            error = errDuration;
+        } else {
+            status = controlExercise(results, params, duration, difficulty);
+            // Some of the required poses are not available
+            if (status == -1) error = errControlExercise;
+        }
 
         // Return
         return {
@@ -45,7 +56,7 @@ export const exerciseResult = async (detector, params, image, duration = 0) =>  
     }
 }
 
-export const exerciseResultFromRGBArray = async (detector, params, rgbArray, width, height, duration = 0) => {
+export const exerciseResultFromRGBArray = async (detector, params, rgbArray, width, height, duration = 0, difficulty = 2) => {
     try {
         const dataArray = new Uint8ClampedArray(width * height * 4);
         for (let i = 0; i < width * height; i++) {
@@ -55,7 +66,7 @@ export const exerciseResultFromRGBArray = async (detector, params, rgbArray, wid
             dataArray[i * 4 + 3] = 255; // set alpha channel to 255
         }
         let image = new ImageData(dataArray, width, height);
-        let results = await exerciseResult(detector, params, image, duration);
+        let results = await exerciseResult(detector, params, image, duration, difficulty);
         return results;
 
     } catch (error) {
@@ -85,7 +96,7 @@ export const getExercisesList = async () => {
         return res.data.data;
     }
     catch (error) {
-        console.log(error);
+        //console.log(error);
         return "";
     }
 }
