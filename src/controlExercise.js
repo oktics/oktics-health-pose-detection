@@ -297,7 +297,13 @@ const controlExerciseDo = (condition, results, params, mode, space, difficulty) 
 	let percentages = [];
 	let angle;
 
-	let kps = params.kpDegrees.flat();
+	let kps;
+	if (mode != 'both') {
+		var i = getConditionSide(mode, params.side);
+		kps = params.kpDegrees[i].flat();
+	} else {
+		kps = params.kpDegrees.flat();
+	}
 	const isAboveThreshold = (currentValue) =>
 		results.keypoints3D[currentValue].score > 0.5;
 	let valid = kps.every(isAboveThreshold);

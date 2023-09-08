@@ -1,6 +1,6 @@
 {
   "name": "@oktics/oktics-health-pose",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Black box for pose estimation",
   "main": "./src/pose.js",
   "scripts": {
