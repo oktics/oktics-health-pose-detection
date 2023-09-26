@@ -3,6 +3,8 @@ import {find_angle, find_angle3D } from "./angles.js";
 export let repetitionsCounter = 0;
 export let holdStatus = 0;
 export let successPercentage = [0, 0];
+export let currentSide;
+export let stateByCondition = [];
 
 let posicioInici = true; //Estat inicial d'un exercici(cos// amunt quan fem sentadilla)
 let posicioFinal = false;	//Estat final d'un exercici (cos abaix quan fem sentadilla)
@@ -20,6 +22,12 @@ let req = [];
 
 export function initExercise() {
 	repetitionsCounter = 0;
+	holdStatus = 0;
+	successPercentage = [0, 0];
+	posicioInici = true;
+	posicioFinal = false;
+	lastExercise = '';
+	counter = 0;
 	toggle = false;
 }
 
@@ -215,6 +223,7 @@ export default function controlExercise(results, exercise, minDuration, difficul
 		controlParams.push(e);
 	}
 
+	stateByCondition = [];
 	for (var i = 0; i < controlParams.length; i++) {
 		var paramSet = controlParams[i];
 		if (typeof accomplishReq[i] === "undefined") {
@@ -226,11 +235,13 @@ export default function controlExercise(results, exercise, minDuration, difficul
 			req[i] = 0;
 		}
 		const [status, percentages] = controlExerciseDo(i, results, paramSet, mode, space, difficulty);
+		stateByCondition.push(status);
 		states.push(status);
 		successP.push(percentages);
 	}
 
 	// Hold status
+	states = states.flat().filter((el) => [0, 1, -1].includes(el));
 	const equals = states.every(i => i == states[0]);
 	if (equals && states[0] == 1) {
 		holdStatus = 1;
@@ -289,11 +300,17 @@ export default function controlExercise(results, exercise, minDuration, difficul
 			successPercentage = [averageLeft, averageRight];
 		}
 	}
+	// current side
+	if (mode != 'alternate') {
+		currentSide = mode;
+	} else {
+		currentSide = toggle ? "left" : "right";
+	}
 	return 0;
 }
 
 const controlExerciseDo = (condition, results, params, mode, space, difficulty) => {
-	let status;
+	let status = [];
 	let percentages = [];
 	let angle;
 
@@ -326,9 +343,9 @@ const controlExerciseDo = (condition, results, params, mode, space, difficulty) 
 		}
 	}
 
+	let side = [0, 1]; // right, left
 	if (valid) {
 		var angles = [];
-		let side = [0, 1]; // right, left
 		side.forEach(i => {
 			kps = params.kpDegrees[i];
 			if ((mode == 'left' && i == 0) || (mode == 'right' && i == 1)) {
@@ -350,23 +367,27 @@ const controlExerciseDo = (condition, results, params, mode, space, difficulty) 
 		// Difficulty level
 		const [minDegree, maxDegree] = setDifficultyLevel(params.minDegree, params.maxDegree, params.change, difficulty);
 
-		// Initial and final exercise position
-		if (posicioInici && accomplishReq[condition] && (
-			(params.change == 'less2more' && angle > maxDegree && mode != 'both') ||
-			(params.change == 'less2more' && angles[0] > maxDegree && angles[1] > maxDegree && mode == 'both') ||
-			(params.change == 'more2less' && angle < minDegree && mode != 'both') ||
-			(params.change == 'more2less' && angles[0] < minDegree && angles[1] < minDegree && mode == 'both'))) {
-			status = 1;
-		} else if (posicioFinal && (
-			(params.change == 'more2less' && angle > maxDegree && mode != "both") ||
-			(params.change == 'more2less' && angles[0] > maxDegree && angles[1] > maxDegree && mode == 'both') ||
-			(params.change == 'less2more' && angle < minDegree && mode != 'both') ||
-			(params.change == 'less2more' && angles[0] < minDegree && angles[1] < minDegree && mode == 'both'))) {
-			status = 0;
-			if (typeof params.requirement !== "undefined") accomplishReq[condition] = false;
-		} else {
-			status = -1;
-		}
+		// statusByCondition
+		side.forEach(i => {
+			if (posicioInici && accomplishReq[condition] && (
+				(params.change == 'less2more' && angle > maxDegree && mode != 'both') ||
+				(params.change == 'less2more' && angles[i] > maxDegree && mode == 'both') ||
+				(params.change == 'more2less' && angle < minDegree && mode != 'both') ||
+				(params.change == 'more2less' && angles[i] < minDegree && mode == 'both'))) {
+				status.push(1);
+			} else if (posicioFinal && (
+				(params.change == 'more2less' && angle > maxDegree && mode != 'both') ||
+				(params.change == 'more2less' && angles[i] > maxDegree && mode == 'both') ||
+				(params.change == 'less2more' && angle < minDegree && mode != 'both') ||
+				(params.change == 'less2more' && angles[i] < minDegree && mode == 'both'))) {
+				status.push(0);
+				if (typeof params.requirement !== "undefined") accomplishReq[condition] = false;
+			} else if ((mode == 'right' && i == 1) || (mode == 'left' && i == 0)) {
+				status.push("");
+			} else {
+				status.push(-1);
+			}
+		});
 
 		// Check additional requirements
 		if (typeof params.requirement !== "undefined" && !accomplishReq[condition] && posicioInici) {
@@ -421,7 +442,13 @@ const controlExerciseDo = (condition, results, params, mode, space, difficulty) 
 			});
 		}
 	} else {
-		//console.log('invalid')
+		side.forEach(i => {
+			if ((mode == 'right' && i == 1) || (mode == 'left' && i == 0)) {
+				status.push("");
+			} else {
+				status.push(-1);
+			}
+		});
 	}
 	return [status, percentages, angles];
 }

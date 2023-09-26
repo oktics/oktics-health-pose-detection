@@ -3,7 +3,7 @@ import * as poseDetection from '@tensorflow-models/pose-detection';
 import '@tensorflow/tfjs-backend-webgl';
 import '@mediapipe/pose';
 
-import controlExercise, { repetitionsCounter, holdStatus, successPercentage} from "./controlExercise.js";
+import controlExercise, { repetitionsCounter, holdStatus, successPercentage, stateByCondition, currentSide } from "./controlExercise.js";
 import { initExercise } from "./controlExercise.js";
 
 const healthApi = 'https://vps.okoproject.com:49180/oktics-api';
@@ -47,6 +47,8 @@ export const exerciseResult = async (detector, params, image, duration = 0, diff
             repetitions: repetitionsCounter,
             holdStatus: holdStatus,
             successPercentage: successPercentage,
+            stateByCondition: stateByCondition,
+            currentSide: currentSide,
             error: error
         }
 
