@@ -251,26 +251,6 @@ export default function controlExercise(results, exercise, minDuration, difficul
 		holdStatus = -1;
 	}
 
-	// Count repetition
-	if (holdStatus == 1) {
-		// final position
-		if (counter >= minDuration) {
-			posicioInici = false;
-			posicioFinal = true;
-			repetitionsCounter += 1;
-			if (mode == 'alternate') toggle = !toggle;
-		}
-		if (timer === undefined) timer = setInterval(() => counter = counter + 1, 1000);
-	} else if (holdStatus == 0) {
-		// initial position
-		posicioInici = true;
-		posicioFinal = false;
-		counter = 0;
-		if (timer !== undefined) timer = clearInterval(timer);
-	} else {
-		if (timer !== undefined) timer = clearInterval(timer);
-	}
-
 	const hasSuccessed = successP.every(i => i != '');
 	if (hasSuccessed) {
 		// Mean of all conditions
@@ -300,6 +280,27 @@ export default function controlExercise(results, exercise, minDuration, difficul
 			successPercentage = [averageLeft, averageRight];
 		}
 	}
+
+	// Count repetition
+	if (holdStatus == 1) {
+		// final position
+		if (counter >= minDuration) {
+			posicioInici = false;
+			posicioFinal = true;
+			repetitionsCounter += 1;
+			if (mode == 'alternate') toggle = !toggle;
+		}
+		if (timer === undefined) timer = setInterval(() => counter = counter + 1, 1000);
+	} else if (holdStatus == 0) {
+		// initial position
+		posicioInici = true;
+		posicioFinal = false;
+		counter = 0;
+		if (timer !== undefined) timer = clearInterval(timer);
+	} else {
+		if (timer !== undefined) timer = clearInterval(timer);
+	}
+
 	// current side
 	if (mode != 'alternate') {
 		currentSide = mode;
