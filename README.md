@@ -303,6 +303,13 @@ Code status -1 means that the body is in an intermediate position between the st
 
 *successPercentage*: position success rate: 100% means that the exercise position is the reference position, 0% means that the body is in the starting position.
 
+*stateByCondition*: array with code status foreach control condition:
+Code status 0 means the condition position is ready to start the exercise (e.g. arms down before starting the "Arms Raise" exercise). 
+Code status 1 means that the condition position has been reached (for example, arms up in exercise "Raise arms"). 
+Code status -1 means that the condition position is in an intermediate state between the starting point and the correct pose.
+
+*currentSide*: current side in exercise execution (e.g. left, right, both).
+
 *error*: error message. If there has been an error other results cannot be available.
 
 ```
