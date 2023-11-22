@@ -514,7 +514,7 @@ const getAngle = (kps, results, space, projPlanes = "") => {
 				point = calculateProjection(point, surface);
 			} else if (plane === 'XY') {
 				// XY-projection
-				const surface = { A: 0, B: 0, C: 1, D: 1 }
+				const surface = { A: 0, B: 0, C: 1, D: -1 }
 				point = calculateProjection(point, surface);
 			}
 			points.push(point);
