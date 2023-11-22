@@ -311,6 +311,7 @@ export default function controlExercise(results, exercise, minDuration, difficul
 }
 
 const controlExerciseDo = (condition, results, params, mode, space, difficulty) => {
+	const minScore = 0.5;
 	let status = [];
 	let percentages = [];
 	let angle;
@@ -323,23 +324,23 @@ const controlExerciseDo = (condition, results, params, mode, space, difficulty) 
 		kps = params.kpDegrees.flat();
 	}
 	const isAboveThreshold = (currentValue) =>
-		results.keypoints3D[currentValue].score > 0.5;
+		results.keypoints3D[currentValue].score > minScore;
 	let valid = kps.every(isAboveThreshold);
 
 	// Check feet keypoint
 	var index = kps.indexOf(27);
-	if (!valid && index > -1 && results.keypoints3D[27].score < 0.5) {
-		if (results.keypoints3D[29].score < 0.5) {
+	if (!valid && index > -1 && results.keypoints3D[27].score < minScore) {
+		if (results.keypoints3D[29].score < minScore) {
 			valid = kps.every(isAboveThreshold);
-		} else if (results.keypoints3D[31].score < 0.5) {
+		} else if (results.keypoints3D[31].score < minScore) {
 			valid = kps.every(isAboveThreshold);
 		}
 	}
 	index = kps.indexOf(28);
-	if (!valid && index > -1 && results.keypoints3D[28].score < 0.5) {
-		if (results.keypoints3D[30].score < 0.5) {
+	if (!valid && index > -1 && results.keypoints3D[28].score < minScore) {
+		if (results.keypoints3D[30].score < minScore) {
 			valid = kps.every(isAboveThreshold);
-		} else if (results.keypoints3D[32].score < 0.5) {
+		} else if (results.keypoints3D[32].score < minScore) {
 			valid = kps.every(isAboveThreshold);
 		}
 	}
