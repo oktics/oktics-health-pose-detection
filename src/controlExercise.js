@@ -1,4 +1,4 @@
-import {find_angle, find_angle3D } from "./angles.js";
+import { find_angle, find_angle3D } from "./angles.js";
 
 export let repetitionsCounter = 0;
 export let holdStatus = 0;
@@ -311,7 +311,6 @@ export default function controlExercise(results, exercise, minDuration, difficul
 }
 
 const controlExerciseDo = (condition, results, params, mode, space, difficulty) => {
-	const minScore = 0.5;
 	let status = [];
 	let percentages = [];
 	let angle;
@@ -324,23 +323,23 @@ const controlExerciseDo = (condition, results, params, mode, space, difficulty) 
 		kps = params.kpDegrees.flat();
 	}
 	const isAboveThreshold = (currentValue) =>
-		results.keypoints3D[currentValue].score > minScore;
+		results.keypoints3D[currentValue].score > 0.5;
 	let valid = kps.every(isAboveThreshold);
 
 	// Check feet keypoint
 	var index = kps.indexOf(27);
-	if (!valid && index > -1 && results.keypoints3D[27].score < minScore) {
-		if (results.keypoints3D[29].score < minScore) {
+	if (!valid && index > -1 && results.keypoints3D[27].score < 0.5) {
+		if (results.keypoints3D[29].score < 0.5) {
 			valid = kps.every(isAboveThreshold);
-		} else if (results.keypoints3D[31].score < minScore) {
+		} else if (results.keypoints3D[31].score < 0.5) {
 			valid = kps.every(isAboveThreshold);
 		}
 	}
 	index = kps.indexOf(28);
-	if (!valid && index > -1 && results.keypoints3D[28].score < minScore) {
-		if (results.keypoints3D[30].score < minScore) {
+	if (!valid && index > -1 && results.keypoints3D[28].score < 0.5) {
+		if (results.keypoints3D[30].score < 0.5) {
 			valid = kps.every(isAboveThreshold);
-		} else if (results.keypoints3D[32].score < minScore) {
+		} else if (results.keypoints3D[32].score < 0.5) {
 			valid = kps.every(isAboveThreshold);
 		}
 	}
