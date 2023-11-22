@@ -508,8 +508,7 @@ const getAngle = (kps, results, space, projPlanes = "") => {
 			if (plane === 'YZ') {
 				// YZ-projection
 				const surface = {
-					A: 1, B: 0, C: 0, D: -: wq
-					1 }
+					A: 1, B: 0, C: 0, D: -1 }
 				point = calculateProjection(point, surface);
 			} else if (plane === 'XZ') {
 				// XZ-projection
