@@ -140,7 +140,7 @@ export default class PoseExercise {
             runtime: this.runtime,
             enableSmoothing: true,
             modelType: this.modelType,
-            solutionPath: 'https://vps.okoproject.com/oktics-health/@mediapipe/pose/'
+            solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/pose'
         }
         return await poseDetection.createDetector(this.model, detectorConfig);
     }
