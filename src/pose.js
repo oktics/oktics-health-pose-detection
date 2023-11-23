@@ -122,7 +122,7 @@ export default class PoseExercise {
     // runtime: 'mediapipe' or 'tfjs'
     constructor(selectedExercise,
         runtime = 'mediapipe',
-        modelType = 'full') {
+        modelType = 'lite') {
         // Model basic options
         this.runtime = runtime;
         this.modelType = modelType;
