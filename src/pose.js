@@ -1,7 +1,7 @@
-import axios from 'axios';
-import * as poseDetection from '@tensorflow-models/pose-detection';
-import '@tensorflow/tfjs-backend-webgl';
-import '@mediapipe/pose';
+//import axios from 'axios';
+//import * as poseDetection from '@tensorflow-models/pose-detection';
+//import '@tensorflow/tfjs-backend-webgl';
+//import '@mediapipe/pose';
 
 import controlExercise, { repetitionsCounter, holdStatus, successPercentage, stateByCondition, currentSide } from "./controlExercise.js";
 import { initExercise } from "./controlExercise.js";
